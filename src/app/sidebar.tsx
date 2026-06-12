@@ -13,7 +13,16 @@ const links = [
   { href: "/expenses", label: "Expenses" },
   { href: "/maintenance", label: "Maintenance" },
   { href: "/landlord-statement", label: "Landlord Statement" },
-  { href: "/export/rent-roll.csv", label: "Export CSV" },
+];
+
+const exports = [
+  { href: "/export/rent-roll.csv", label: "CSV: Rent Roll" },
+  { href: "/api/export/units", label: "CSV: Units" },
+  { href: "/api/export/tenants", label: "CSV: Tenants" },
+  { href: "/api/export/expenses", label: "CSV: Expenses" },
+  { href: "/api/export/arrears", label: "CSV: Arrears" },
+  { href: "/api/export/reports/landlord-statement", label: "PDF: Landlord Statement" },
+  { href: "/api/export/reports/arrears", label: "PDF: Arrears Report" },
 ];
 
 export default function Sidebar() {
@@ -28,21 +37,21 @@ export default function Sidebar() {
         </div>
       </div>
       <nav>
-        {links.map((link) =>
-          link.href.startsWith("/export") ? (
-            <a key={link.href} href={link.href}>
-              {link.label}
-            </a>
-          ) : (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={pathname === link.href ? "active" : ""}
-            >
-              {link.label}
-            </Link>
-          ),
-        )}
+        {links.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className={pathname === link.href ? "active" : ""}
+          >
+            {link.label}
+          </Link>
+        ))}
+        <div style={{ color: "var(--silver)", fontSize: 11, padding: "16px 12px 4px", fontWeight: 600, letterSpacing: 1 }}>EXPORTS</div>
+        {exports.map((link) => (
+          <a key={link.href} href={link.href} style={{ fontSize: 13 }}>
+            {link.label}
+          </a>
+        ))}
       </nav>
     </aside>
   );
