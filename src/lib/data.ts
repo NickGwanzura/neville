@@ -1,4 +1,12 @@
 import { prisma } from "./prisma";
+import { cache } from "react";
+
+export const getUnits = cache(async (propertyId = 1) => {
+  return prisma.unit.findMany({
+    where: { propertyId },
+    orderBy: { id: "asc" },
+  });
+});
 
 export type Metrics = {
   totalUnits: number;

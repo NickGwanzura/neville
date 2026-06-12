@@ -9,6 +9,19 @@ export default async function Expenses() {
   return (
     <>
       <h2>Expenses & Utilities</h2>
+      <details className="panel" style={{ marginBottom: 16 }}>
+        <summary style={{ cursor: "pointer", fontWeight: 600, color: "var(--blue)" }}>+ Add Expense</summary>
+        <form method="post" action="/api/expenses" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12 }}>
+          <input name="month" placeholder="Month (e.g. 2026-06)" defaultValue="2026-06" />
+          <input name="expenseType" placeholder="Expense type" required />
+          <input name="supplier" placeholder="Supplier" />
+          <select name="currency"><option>USD</option><option>ZiG</option><option>ZWL</option></select>
+          <input name="amount" type="number" step="0.01" placeholder="Amount" />
+          <select name="status"><option>Due</option><option>Paid</option><option>Overdue</option></select>
+          <input name="notes" placeholder="Notes" style={{ gridColumn: "1 / -1" }} />
+          <button type="submit" style={{ gridColumn: "1 / -1" }}>Add Expense</button>
+        </form>
+      </details>
       <table>
         <thead>
           <tr><th>Month</th><th>Expense</th><th>Supplier</th><th>Currency</th><th>Amount</th><th>Status</th><th>Notes</th></tr>
