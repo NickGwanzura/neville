@@ -236,3 +236,122 @@ export async function generateStatementPdf(
     doc.end();
   });
 }
+
+export async function generateLeaseReviewPdf(
+  leaseReviews: {
+    tenantName: string;
+    unitName: string;
+    totalMonths: number;
+    monthsPaid: number;
+    monthsPaidInFull: number;
+    onTimeRate: number;
+    outstandingBalance: number;
+    maintenanceCount: number;
+    lastPaymentMonth: string;
+  }[],
+  maintenance: { id: number; unitId: number | null; issue: string; priority: string; status: string; estimatedCost: number }[],
+  unitMap: Record<number, string>,
+): Promise<Buffer> {
+  const company = await getCompany();
+  return new Promise((resolve, reject) => {
+    const doc = new PDFDocument({ margin: 40, size: "A4" });
+    const chunks: Buffer[] = [];
+    doc.on("data", (c) => chunks.push(c));
+    doc.on("end", () => resolve(Buffer.concat(chunks)));
+    doc.on("error", reject);
+
+    doc.fontSize(20).font("Helvetica-Bold").text(company.companyName, { align: "center" });
+    doc.fontSize(9).font("Helvetica").fillColor("#666").text(company.tagline, { align: "center" });
+    if (company.address) doc.fontSize(8).text(company.address, { align: "center" });
+    doc.fillColor("#000").moveDown(0.3);
+    doc.fontSize(15).text("LEASE REVIEW REPORT", { align: "center" });
+    doc.moveDown(1.5);
+
+    const cols = [40, 130, 200, 260, 330, 390, 460];
+    const headers = ["Tenant", "Unit", "Months", "Paid", "Full", "Rate", "Balance"];
+    let y = doc.y;
+
+    doc.font("Helvetica-Bold").fontSize(8);
+    headers.forEach((h, i) => { doc.text(h, cols[i], y, { width: 85 }); });
+    y = doc.y + 4;
+    doc.moveTo(40, y - 2).lineTo(545, y - 2).stroke();
+    doc.font("Helvetica").fontSize(7.5);
+
+    for (const lr of leaseReviews) {
+      if (y > doc.page.height - 80) {
+        doc.addPage();
+        y = 40;
+      }
+      doc.y = y;
+      doc.text(lr.tenantName, cols[0], y, { width: 85 });
+      doc.text(lr.unitName, cols[1], y, { width: 65 });
+      doc.text(String(lr.totalMonths), cols[2], y, { width: 55 });
+      doc.text(String(lr.monthsPaid), cols[3], y, { width: 55 });
+      doc.text(String(lr.monthsPaidInFull), cols[4], y, { width: 55 });
+      doc.text(`${lr.onTimeRate}%`, cols[5], y, { width: 55 });
+      doc.text(`USD ${lr.outstandingBalance.toFixed(2)}`, cols[6], y, { width: 75 });
+      y = doc.y + 14;
+    }
+
+    y += 10;
+    doc.y = y;
+    doc.moveTo(40, y).lineTo(545, y).stroke();
+    y += 8;
+    doc.y = y;
+    doc.font("Helvetica-Bold").fontSize(10);
+    doc.text("Lease Review Summary", 40, y);
+    y += 18;
+    doc.font("Helvetica").fontSize(9);
+
+    const excellent = leaseReviews.filter((l) => l.onTimeRate >= 90).length;
+    const good = leaseReviews.filter((l) => l.onTimeRate >= 70 && l.onTimeRate < 90).length;
+    const fair = leaseReviews.filter((l) => l.onTimeRate >= 50 && l.onTimeRate < 70).length;
+    const poor = leaseReviews.filter((l) => l.onTimeRate < 50).length;
+    const totalOutstanding = leaseReviews.reduce((s, l) => s + l.outstandingBalance, 0);
+
+    const summary = [
+      ["Total Tenants", String(leaseReviews.length)],
+      ["Excellent (90%+)", String(excellent)],
+      ["Good (70-89%)", String(good)],
+      ["Fair (50-69%)", String(fair)],
+      ["Poor (<50%)", String(poor)],
+      ["Total Outstanding", `USD ${totalOutstanding.toFixed(2)}`],
+    ];
+
+    const sx = 40, sv = 300;
+    for (const [label, value] of summary) {
+      if (y > doc.page.height - 60) {
+        doc.addPage();
+        y = 40;
+      }
+      doc.text(label, sx, y, { width: 250 });
+      doc.text(value, sv, y, { width: 200 });
+      y += 16;
+    }
+
+    y += 14;
+    doc.y = y;
+    doc.font("Helvetica-Bold").fontSize(10);
+    doc.text("Recent Maintenance Activity", 40, y);
+    y += 18;
+    doc.y = y;
+    doc.font("Helvetica").fontSize(8);
+
+    for (const m of maintenance.slice(0, 12)) {
+      if (y > doc.page.height - 60) {
+        doc.addPage();
+        y = 40;
+      }
+      const unitName = unitMap[m.unitId ?? -1] ?? "General";
+      doc.text(`${unitName} — ${m.issue}`, 40, y, { width: 350 });
+      doc.text(`${m.priority} · ${m.status}`, 400, y, { width: 140 });
+      y += 14;
+    }
+
+    const fy = doc.page.height - 40;
+    doc.fontSize(7).fillColor("#999").text(company.footer, 40, fy, { align: "center" });
+    if (company.phone || company.email) doc.text([company.phone, company.email].filter(Boolean).join("  ·  "), 40, fy + 10, { align: "center" });
+
+    doc.end();
+  });
+}

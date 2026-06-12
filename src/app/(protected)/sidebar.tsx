@@ -27,6 +27,7 @@ const csvExports = [
 const pdfExports = [
   { href: "/api/export/reports/landlord-statement", label: "Monthly Statement" },
   { href: "/api/export/reports/arrears", label: "Arrears Report" },
+  { href: "/api/export/reports/lease-reviews", label: "Lease Reviews" },
 ];
 
 export default function Sidebar() {
