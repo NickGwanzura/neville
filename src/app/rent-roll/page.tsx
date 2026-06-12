@@ -1,14 +1,33 @@
-import { getCrmData } from "@/lib/data";
+import { getCrmData, getUnits } from "@/lib/data";
 
 function money(v: number) {
   return v.toFixed(2);
 }
 
 export default async function RentRollPage() {
-  const { rentRoll, unitMap, tenantMap } = await getCrmData();
+  const { rentRoll, unitMap, tenantMap, tenants } = await getCrmData();
+  const units = await getUnits();
   return (
     <>
       <h2>Monthly Rent Roll</h2>
+      <details className="panel" style={{ marginBottom: 16 }}>
+        <summary style={{ cursor: "pointer", fontWeight: 600, color: "var(--blue)" }}>+ Add Rent Roll Entry</summary>
+        <form method="post" action="/api/rent-roll" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8, marginTop: 12 }}>
+          <input name="month" type="month" defaultValue="2026-06" required />
+          <select name="unitId" required>
+            <option value="">Unit</option>
+            {units.map((u) => <option key={u.id} value={u.id}>{u.unitName}</option>)}
+          </select>
+          <select name="tenantId" required>
+            <option value="">Tenant</option>
+            {tenants.map((t) => <option key={t.id} value={t.id}>{t.tenantName}</option>)}
+          </select>
+          <input name="rentDue" type="number" step="0.01" placeholder="Rent due" />
+          <input name="levyDue" type="number" step="0.01" placeholder="Levy due" />
+          <input name="notes" placeholder="Notes" style={{ gridColumn: "1 / -1" }} />
+          <button type="submit" style={{ gridColumn: "1 / -1" }}>Add Entry</button>
+        </form>
+      </details>
       <table>
         <thead>
           <tr>
