@@ -1,6 +1,6 @@
 @import "tailwindcss";
 :root{--blue:#0e2a47;--blue2:#173d63;--silver:#d7dde5;--light:#f6f8fb;--text:#1f2a37;--muted:#6b7280}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--light);color:var(--text)}
+*{box-sizing:border-box}body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;background:var(--light);color:var(--text)}
 .layout{display:flex;min-height:100vh}.sidebar{width:270px;background:var(--blue);color:white;padding:24px;position:fixed;height:100vh}.brand{display:flex;gap:12px;align-items:center;margin-bottom:30px}.mark{width:44px;height:44px;border:1px solid var(--silver);display:grid;place-items:center;font-weight:800;font-size:22px}.brand h1{font-size:20px;margin:0}.brand p{margin:2px 0 0;color:var(--silver);font-size:12px}
 nav a{display:block;color:white;text-decoration:none;padding:11px 12px;border-radius:8px;margin-bottom:4px;font-size:14px}nav a:hover{background:var(--blue2)}nav a.active{background:var(--blue2)}
 .content{margin-left:270px;padding:32px;width:calc(100% - 270px)}h2{margin:0 0 6px;color:var(--blue);font-size:28px}h3{color:var(--blue)}p{color:var(--muted)}
