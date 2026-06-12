@@ -1,4 +1,5 @@
 import { getCrmData } from "@/lib/data";
+import { DownloadButton } from "../download-button";
 
 function ratingInfo(rate: number) {
   if (rate >= 90) return { label: "Excellent", cls: "badge-success" };
@@ -25,9 +26,7 @@ export default async function LeaseReviewsPage() {
             Payment punctuality and maintenance history per tenant
           </p>
         </div>
-        <a href="/api/export/reports/lease-reviews" className="btn btn-ghost" style={{ fontSize: 13, padding: "8px 18px" }}>
-          ⬇ Download PDF
-        </a>
+        <DownloadButton href="/api/export/reports/lease-reviews" />
       </div>
 
       <div className="table-wrap">
