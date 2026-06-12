@@ -1,4 +1,4 @@
-const fromEmail = process.env.RESEND_FROM_EMAIL || "noreply@yourdomain.com";
+const fromEmail = process.env.RESEND_FROM_EMAIL || process.env.EMAIL_FROM_ADDRESS || "noreply@yourdomain.com";
 
 export async function sendReceiptEmail(params: {
   to: string;
