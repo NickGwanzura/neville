@@ -71,22 +71,22 @@ async function main() {
     unitRecords[row[0]] = unit;
   }
 
-  const tenantData: [string, string, string, string, boolean][] = [
-    ["Modernly Modest Brides","Modernly Modest Brides","Unit 3","Bridal",true],
-    ["Luna's Shop","Luna's Shop","Unit 4","Retail",true],
-    ["Alvatron Electronics","Alvatron Electronics","Unit 5","Electronics",true],
-    ["Birdie Bling","Birdie Bling","Unit 6","Retail",true],
-    ["Laura's Scent","Laura's Scent","Unit 7","Fragrance",true],
-    ["Speed Blu","Speed Blu","Unit 8","Retail",true],
-    ["Queens Crown","Queens Crown","Unit 9","Retail",true],
-    ["Elsie The Makeup Artist","Elsie The Makeup Artist","Unit 10","Beauty",true],
-    ["Crimelock Security","Crimelock Security","Unit 11","Security",true],
-    ["Unit 12 Tenant","Unit 12","Unit 12","Retail",false],
-    ["Cafe Operator","Cafe","Cafe","Cafe",true],
+  const tenantData: [string, string, string, string, boolean, string][] = [
+    ["Modernly Modest Brides","Modernly Modest Brides","Unit 3","Bridal",true,"brides@example.com"],
+    ["Luna's Shop","Luna's Shop","Unit 4","Retail",true,"luna@example.com"],
+    ["Alvatron Electronics","Alvatron Electronics","Unit 5","Electronics",true,"alvatron@example.com"],
+    ["Birdie Bling","Birdie Bling","Unit 6","Retail",true,"birdie@example.com"],
+    ["Laura's Scent","Laura's Scent","Unit 7","Fragrance",true,"laura@example.com"],
+    ["Speed Blu","Speed Blu","Unit 8","Retail",true,"speed@example.com"],
+    ["Queens Crown","Queens Crown","Unit 9","Retail",true,"queens@example.com"],
+    ["Elsie The Makeup Artist","Elsie The Makeup Artist","Unit 10","Beauty",true,"elsie@example.com"],
+    ["Crimelock Security","Crimelock Security","Unit 11","Security",true,"crimelock@example.com"],
+    ["Unit 12 Tenant","Unit 12","Unit 12","Retail",false,""],
+    ["Cafe Operator","Cafe","Cafe","Cafe",true,"cafe@example.com"],
   ];
 
   const tenantRecords: Record<string, { id: number; commissionRate: number; unitId: number }> = {};
-  for (const [name, trading, unitName, btype, comm] of tenantData) {
+  for (const [name, trading, unitName, btype, comm, email] of tenantData) {
     const rate = comm ? 0.1 : 0;
     const tenant = await prisma.tenant.create({
       data: {
@@ -97,6 +97,7 @@ async function main() {
         businessType: btype,
         commissionApplicable: comm,
         commissionRate: rate,
+        email,
       },
     });
     tenantRecords[name] = { id: tenant.id, commissionRate: rate, unitId: tenant.unitId };

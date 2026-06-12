@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { sendReceiptEmail } from "@/lib/email";
 
 export async function POST(
   request: Request,
@@ -15,7 +16,7 @@ export async function POST(
 
   const rentRoll = await prisma.rentRoll.findUniqueOrThrow({
     where: { id: parseInt(id) },
-    include: { tenant: true },
+    include: { tenant: true, unit: true },
   });
 
   const commissionAmount = rentRoll.tenant.commissionApplicable
@@ -32,6 +33,21 @@ export async function POST(
       commissionAmount,
     },
   });
+
+  const to = rentRoll.tenant.email;
+  if (to && process.env.RESEND_API_KEY) {
+    sendReceiptEmail({
+      to,
+      tenantName: rentRoll.tenant.tenantName,
+      unitName: rentRoll.unit.unitName,
+      month: rentRoll.month,
+      rentPaid,
+      levyPaid,
+      receiptNumber,
+      commissionAmount,
+      notes,
+    }).catch((err) => console.error("Email send error:", err));
+  }
 
   redirect("/rent-roll");
 }
