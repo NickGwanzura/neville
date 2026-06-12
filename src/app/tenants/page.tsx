@@ -30,7 +30,7 @@ export default async function Tenants() {
       </details>
       <table>
         <thead>
-          <tr><th>Tenant</th><th>Trading Name</th><th>Unit</th><th>Business Type</th><th>Commission</th><th>Rate</th></tr>
+          <tr><th>Tenant</th><th>Trading Name</th><th>Unit</th><th>Business Type</th><th>Commission</th><th>Rate</th><th>Statement</th></tr>
         </thead>
         <tbody>
           {tenants.map((t) => (
@@ -41,6 +41,7 @@ export default async function Tenants() {
               <td>{t.businessType}</td>
               <td>{t.commissionApplicable ? "Yes" : "No"}</td>
               <td>{Math.round(t.commissionRate * 100)}%</td>
+              <td><a href={`/api/reports/statement/${t.id}`} style={{ fontSize: 12 }}>PDF</a></td>
             </tr>
           ))}
         </tbody>

@@ -32,7 +32,7 @@ export default async function RentRollPage() {
         <thead>
           <tr>
             <th>Unit</th><th>Tenant</th><th>Rent Due</th><th>Rent Paid</th><th>Rent Bal.</th>
-            <th>Levy Due</th><th>Levy Paid</th><th>Levy Bal.</th><th>Commission</th><th>Receipt</th><th>Update</th>
+            <th>Levy Due</th><th>Levy Paid</th><th>Levy Bal.</th><th>Commission</th><th>Receipt</th><th>Docs</th><th>Update</th>
           </tr>
         </thead>
         <tbody>
@@ -48,6 +48,10 @@ export default async function RentRollPage() {
               <td>{money(r.levyDue - r.levyPaid)}</td>
               <td>{money(r.commissionAmount)}</td>
               <td>{r.receiptNumber}</td>
+              <td style={{ whiteSpace: "nowrap" }}>
+                <a href={`/api/reports/invoice/${r.id}`} style={{ fontSize: 12, marginRight: 6 }}>Invoice</a>
+                <a href={`/api/reports/receipt/${r.id}`} style={{ fontSize: 12 }}>Receipt</a>
+              </td>
               <td>
                 <form method="post" action={`/rent-roll/${r.id}/update`} className="inline-form">
                   <input name="rentPaid" defaultValue={r.rentPaid} type="number" step="0.01" />
