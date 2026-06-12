@@ -14,12 +14,8 @@ async function main() {
   const existing = await prisma.property.findFirst({
     where: { name: "The Courtyard Complex" },
   });
-  if (existing) {
-    console.log("Database already seeded.");
-    await prisma.$disconnect();
-    return;
-  }
 
+  if (!existing) {
   const property = await prisma.property.create({
     data: {
       name: "The Courtyard Complex",
@@ -154,6 +150,7 @@ async function main() {
   });
 
   console.log("Seeded successfully.");
+  }
 
   const adminEmail = "neville@hiltonpropertieszw.com";
   const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
@@ -170,6 +167,25 @@ async function main() {
       },
     });
     console.log(`Admin user created: ${adminEmail} / changeme123`);
+  } else {
+    console.log("Admin user already exists.");
+  }
+
+  const admin2Email = "nicholas.gwanzura@outlook.com";
+  const existingAdmin2 = await prisma.user.findUnique({ where: { email: admin2Email } });
+  if (!existingAdmin2) {
+    const bcrypt2 = await import("bcryptjs");
+    const passwordHash2 = await bcrypt2.hash("Zubi@2030$", 12);
+    await prisma.user.create({
+      data: {
+        email: admin2Email,
+        passwordHash: passwordHash2,
+        name: "Nicholas Gwanzura",
+        role: "Admin",
+        mustChangePassword: false,
+      },
+    });
+    console.log(`Admin user created: ${admin2Email}`);
   } else {
     console.log("Admin user already exists.");
   }

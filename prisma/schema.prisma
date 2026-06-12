@@ -32,28 +32,28 @@ model Unit {
   monthlyRent Float    @default(0)
   monthlyLevy Float    @default(0)
   notes       String   @default("")
-  property    Property @relation(fields: [propertyId], references: [id])
-  tenants     Tenant[]
-  rentRolls   RentRoll[]
-  maintenance MaintenanceLog[]
+    property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+    tenants     Tenant[]
+    rentRolls   RentRoll[]
+    maintenance MaintenanceLog[]
 }
 
 model Tenant {
-  id                   Int      @id @default(autoincrement())
-  propertyId           Int
-  unitId               Int
-  tenantName           String
-  tradingName          String   @default("")
-  businessType         String   @default("")
-  phone                String   @default("")
-  email                String   @default("")
-  commissionApplicable Boolean  @default(true)
-  commissionRate       Float    @default(0.10)
-  notes                String   @default("")
-  property             Property @relation(fields: [propertyId], references: [id])
-  unit                 Unit     @relation(fields: [unitId], references: [id])
-  rentRolls            RentRoll[]
-  deposits             Deposit[]
+    id                   Int      @id @default(autoincrement())
+    propertyId           Int
+    unitId               Int
+    tenantName           String
+    tradingName          String   @default("")
+    businessType         String   @default("")
+    phone                String   @default("")
+    email                String   @default("")
+    commissionApplicable Boolean  @default(true)
+    commissionRate       Float    @default(0.10)
+    notes                String   @default("")
+    property             Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+    unit                 Unit     @relation(fields: [unitId], references: [id], onDelete: Cascade)
+    rentRolls            RentRoll[]
+    deposits             Deposit[]
 }
 
 model RentRoll {
@@ -70,34 +70,34 @@ model RentRoll {
   commissionRate   Float    @default(0.10)
   commissionAmount Float    @default(0)
   notes            String   @default("")
-  property         Property @relation(fields: [propertyId], references: [id])
-  unit             Unit     @relation(fields: [unitId], references: [id])
-  tenant           Tenant   @relation(fields: [tenantId], references: [id])
+    property         Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+    unit             Unit     @relation(fields: [unitId], references: [id], onDelete: Cascade)
+    tenant           Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
 model Expense {
-  id          Int      @id @default(autoincrement())
-  propertyId  Int
-  month       String
-  expenseType String
-  supplier    String   @default("")
-  currency    String   @default("USD")
-  amount      Float    @default(0)
-  status      String   @default("Due")
-  notes       String   @default("")
-  property    Property @relation(fields: [propertyId], references: [id])
+    id          Int      @id @default(autoincrement())
+    propertyId  Int
+    month       String
+    expenseType String
+    supplier    String   @default("")
+    currency    String   @default("USD")
+    amount      Float    @default(0)
+    status      String   @default("Due")
+    notes       String   @default("")
+    property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
 
 model Deposit {
-  id         Int      @id @default(autoincrement())
-  propertyId Int
-  tenantId   Int
-  amount     Float
-  currency   String   @default("USD")
-  heldBy     String   @default("")
-  notes      String   @default("")
-  property   Property @relation(fields: [propertyId], references: [id])
-  tenant     Tenant   @relation(fields: [tenantId], references: [id])
+    id         Int      @id @default(autoincrement())
+    propertyId Int
+    tenantId   Int
+    amount     Float
+    currency   String   @default("USD")
+    heldBy     String   @default("")
+    notes      String   @default("")
+    property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+    tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
 model CompanySettings {
@@ -134,6 +134,6 @@ model MaintenanceLog {
   status        String    @default("Open")
   estimatedCost Float     @default(0)
   notes         String    @default("")
-  property      Property  @relation(fields: [propertyId], references: [id])
-  unit          Unit?     @relation(fields: [unitId], references: [id])
+    property      Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+    unit          Unit?     @relation(fields: [unitId], references: [id], onDelete: SetNull)
 }

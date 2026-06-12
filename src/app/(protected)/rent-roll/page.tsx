@@ -1,4 +1,5 @@
 import { getCrmData, getUnits } from "@/lib/data";
+import { DeleteButton } from "../delete-button";
 
 function money(v: number) {
   return v.toFixed(2);
@@ -60,6 +61,7 @@ export default async function RentRollPage() {
                   <input name="notes" defaultValue={r.notes} />
                   <button>Save</button>
                 </form>
+                <DeleteButton action={`/api/rent-roll/${r.id}/delete`} />
               </td>
             </tr>
           ))}

@@ -1,4 +1,5 @@
 import { getCrmData } from "@/lib/data";
+import { DeleteButton } from "../delete-button";
 
 function money(v: number) {
   return v.toFixed(2);
@@ -25,7 +26,7 @@ export default async function Units() {
       </details>
       <table>
         <thead>
-          <tr><th>Unit</th><th>Use</th><th>Status</th><th>Rent</th><th>Levy</th><th>Notes</th></tr>
+          <tr><th>Unit</th><th>Use</th><th>Status</th><th>Rent</th><th>Levy</th><th>Notes</th><th></th></tr>
         </thead>
         <tbody>
           {units.map((u) => (
@@ -36,6 +37,7 @@ export default async function Units() {
               <td>USD {money(u.monthlyRent)}</td>
               <td>USD {money(u.monthlyLevy)}</td>
               <td>{u.notes}</td>
+              <td><DeleteButton action={`/api/units/${u.id}/delete`} /></td>
             </tr>
           ))}
         </tbody>

@@ -1,4 +1,5 @@
 import { getCrmData, getUnits } from "@/lib/data";
+import { DeleteButton } from "../delete-button";
 
 export default async function Tenants() {
   const { tenants, unitMap } = await getCrmData();
@@ -30,7 +31,7 @@ export default async function Tenants() {
       </details>
       <table>
         <thead>
-          <tr><th>Tenant</th><th>Trading Name</th><th>Unit</th><th>Business Type</th><th>Commission</th><th>Rate</th><th>Statement</th></tr>
+          <tr><th>Tenant</th><th>Trading Name</th><th>Unit</th><th>Business Type</th><th>Commission</th><th>Rate</th><th>Statement</th><th></th></tr>
         </thead>
         <tbody>
           {tenants.map((t) => (
@@ -42,6 +43,7 @@ export default async function Tenants() {
               <td>{t.commissionApplicable ? "Yes" : "No"}</td>
               <td>{Math.round(t.commissionRate * 100)}%</td>
               <td><a href={`/api/reports/statement/${t.id}`} style={{ fontSize: 12 }}>PDF</a></td>
+              <td><DeleteButton action={`/api/tenants/${t.id}/delete`} label="Delete" /></td>
             </tr>
           ))}
         </tbody>
