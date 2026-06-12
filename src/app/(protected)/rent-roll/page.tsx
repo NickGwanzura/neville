@@ -10,10 +10,12 @@ export default async function RentRollPage() {
   const units = await getUnits();
   return (
     <>
-      <h2>Monthly Rent Roll</h2>
-      <details className="panel" style={{ marginBottom: 16 }}>
-        <summary style={{ cursor: "pointer", fontWeight: 600, color: "var(--blue)" }}>+ Add Rent Roll Entry</summary>
-        <form method="post" action="/api/rent-roll" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8, marginTop: 12 }}>
+      <div className="page-header">
+        <h2>Monthly Rent Roll</h2>
+      </div>
+      <details className="panel">
+        <summary>+ Add Rent Roll Entry</summary>
+        <form method="post" action="/api/rent-roll" className="form-grid" style={{ gridTemplateColumns: "1fr 1fr 1fr 1fr" }}>
           <input name="month" type="month" defaultValue="2026-06" required />
           <select name="unitId" required>
             <option value="">Unit</option>
@@ -25,48 +27,50 @@ export default async function RentRollPage() {
           </select>
           <input name="rentDue" type="number" step="0.01" placeholder="Rent due" />
           <input name="levyDue" type="number" step="0.01" placeholder="Levy due" />
-          <input name="notes" placeholder="Notes" style={{ gridColumn: "1 / -1" }} />
-          <button type="submit" style={{ gridColumn: "1 / -1" }}>Add Entry</button>
+          <input name="notes" placeholder="Notes" className="full" />
+          <button type="submit" className="full">Add Entry</button>
         </form>
       </details>
-      <table>
-        <thead>
-          <tr>
-            <th>Unit</th><th>Tenant</th><th>Rent Due</th><th>Rent Paid</th><th>Rent Bal.</th>
-            <th>Levy Due</th><th>Levy Paid</th><th>Levy Bal.</th><th>Commission</th><th>Receipt</th><th>Docs</th><th>Update</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rentRoll.map((r) => (
-            <tr key={r.id}>
-              <td>{unitMap[r.unitId] ?? ""}</td>
-              <td>{tenantMap[r.tenantId] ?? ""}</td>
-              <td>{money(r.rentDue)}</td>
-              <td>{money(r.rentPaid)}</td>
-              <td>{money(r.rentDue - r.rentPaid)}</td>
-              <td>{money(r.levyDue)}</td>
-              <td>{money(r.levyPaid)}</td>
-              <td>{money(r.levyDue - r.levyPaid)}</td>
-              <td>{money(r.commissionAmount)}</td>
-              <td>{r.receiptNumber}</td>
-              <td style={{ whiteSpace: "nowrap" }}>
-                <a href={`/api/reports/invoice/${r.id}`} style={{ fontSize: 12, marginRight: 6 }}>Invoice</a>
-                <a href={`/api/reports/receipt/${r.id}`} style={{ fontSize: 12 }}>Receipt</a>
-              </td>
-              <td>
-                <form method="post" action={`/rent-roll/${r.id}/update`} className="inline-form">
-                  <input name="rentPaid" defaultValue={r.rentPaid} type="number" step="0.01" />
-                  <input name="levyPaid" defaultValue={r.levyPaid} type="number" step="0.01" />
-                  <input name="receiptNumber" defaultValue={r.receiptNumber} />
-                  <input name="notes" defaultValue={r.notes} />
-                  <button>Save</button>
-                </form>
-                <DeleteButton action={`/api/rent-roll/${r.id}/delete`} />
-              </td>
+      <div className="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Unit</th><th>Tenant</th><th>Rent Due</th><th>Rent Paid</th><th>Bal.</th>
+              <th>Levy Due</th><th>Levy Paid</th><th>Bal.</th><th>Commission</th><th>Receipt</th><th>Docs</th><th>Update</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {rentRoll.map((r) => (
+              <tr key={r.id}>
+                <td>{unitMap[r.unitId] ?? ""}</td>
+                <td><strong>{tenantMap[r.tenantId] ?? ""}</strong></td>
+                <td>{money(r.rentDue)}</td>
+                <td>{money(r.rentPaid)}</td>
+                <td style={{ fontWeight: r.rentDue - r.rentPaid > 0 ? 600 : 400 }}>{money(r.rentDue - r.rentPaid)}</td>
+                <td>{money(r.levyDue)}</td>
+                <td>{money(r.levyPaid)}</td>
+                <td style={{ fontWeight: r.levyDue - r.levyPaid > 0 ? 600 : 400 }}>{money(r.levyDue - r.levyPaid)}</td>
+                <td>{money(r.commissionAmount)}</td>
+                <td style={{ fontSize: 12 }}>{r.receiptNumber || "—"}</td>
+                <td style={{ whiteSpace: "nowrap" }}>
+                  <a href={`/api/reports/invoice/${r.id}`} className="btn btn-ghost" style={{ fontSize: 11, padding: "3px 8px", marginRight: 4 }}>Invoice</a>
+                  <a href={`/api/reports/receipt/${r.id}`} className="btn btn-ghost" style={{ fontSize: 11, padding: "3px 8px" }}>Receipt</a>
+                </td>
+                <td>
+                  <form method="post" action={`/rent-roll/${r.id}/update`} className="inline-form">
+                    <input name="rentPaid" defaultValue={r.rentPaid} type="number" step="0.01" placeholder="Paid" />
+                    <input name="levyPaid" defaultValue={r.levyPaid} type="number" step="0.01" placeholder="Levy" />
+                    <input name="receiptNumber" defaultValue={r.receiptNumber} placeholder="Receipt" style={{ width: 100 }} />
+                    <input name="notes" defaultValue={r.notes} placeholder="Notes" style={{ width: 120 }} />
+                    <button style={{ padding: "6px 10px", fontSize: 12 }}>Save</button>
+                    <DeleteButton action={`/api/rent-roll/${r.id}/delete`} />
+                  </form>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 }

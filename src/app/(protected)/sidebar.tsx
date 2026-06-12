@@ -4,15 +4,15 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 const links = [
-  { href: "/", label: "Dashboard" },
-  { href: "/units", label: "Units" },
-  { href: "/tenants", label: "Tenants" },
-  { href: "/rent-roll", label: "Rent Roll" },
-  { href: "/arrears", label: "Arrears" },
-  { href: "/vacancies", label: "Vacancies" },
-  { href: "/expenses", label: "Expenses" },
-  { href: "/maintenance", label: "Maintenance" },
-  { href: "/landlord-statement", label: "Landlord Statement" },
+  { href: "/", label: "Dashboard", icon: "◻" },
+  { href: "/units", label: "Units", icon: "⊞" },
+  { href: "/tenants", label: "Tenants", icon: "👥" },
+  { href: "/rent-roll", label: "Rent Roll", icon: "📋" },
+  { href: "/arrears", label: "Arrears", icon: "⚠" },
+  { href: "/vacancies", label: "Vacancies", icon: "▢" },
+  { href: "/expenses", label: "Expenses", icon: "📊" },
+  { href: "/maintenance", label: "Maintenance", icon: "🔧" },
+  { href: "/landlord-statement", label: "Statement", icon: "📄" },
 ];
 
 const exports = [
@@ -21,8 +21,8 @@ const exports = [
   { href: "/api/export/tenants", label: "CSV: Tenants" },
   { href: "/api/export/expenses", label: "CSV: Expenses" },
   { href: "/api/export/arrears", label: "CSV: Arrears" },
-  { href: "/api/export/reports/landlord-statement", label: "PDF: Landlord Statement" },
-  { href: "/api/export/reports/arrears", label: "PDF: Arrears Report" },
+  { href: "/api/export/reports/landlord-statement", label: "PDF: Statement" },
+  { href: "/api/export/reports/arrears", label: "PDF: Arrears" },
 ];
 
 export default function Sidebar() {
@@ -44,26 +44,31 @@ export default function Sidebar() {
         </div>
       </div>
       <nav>
+        <div className="nav-section">Main</div>
         {links.map((link) => (
           <Link
             key={link.href}
             href={link.href}
             className={pathname === link.href ? "active" : ""}
           >
+            <span className="nav-icon">{link.icon}</span>
             {link.label}
           </Link>
         ))}
-        <div style={{ color: "var(--silver)", fontSize: 11, padding: "16px 12px 4px", fontWeight: 600, letterSpacing: 1 }}>EXPORTS</div>
+        <div className="nav-section">Exports</div>
         {exports.map((link) => (
-          <a key={link.href} href={link.href} style={{ fontSize: 13 }}>
+          <a key={link.href} href={link.href} className="nav-item">
+            <span className="nav-icon">↓</span>
             {link.label}
           </a>
         ))}
-        <div style={{ color: "var(--silver)", fontSize: 11, padding: "16px 12px 4px", fontWeight: 600, letterSpacing: 1 }}>SYSTEM</div>
-        <Link href="/settings" className={pathname === "/settings" ? "active" : ""} style={{ fontSize: 13 }}>
+        <div className="nav-section">System</div>
+        <Link href="/settings" className={pathname === "/settings" ? "active nav-item" : "nav-item"}>
+          <span className="nav-icon">⚙</span>
           Company Settings
         </Link>
-        <a onClick={handleLogout} style={{ fontSize: 13, cursor: "pointer" }}>
+        <a onClick={handleLogout} className="nav-item" style={{ cursor: "pointer" }}>
+          <span className="nav-icon">↩</span>
           Sign Out
         </a>
       </nav>

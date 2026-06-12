@@ -8,17 +8,41 @@ export default async function LandlordStatement() {
   const { metrics } = await getCrmData();
   return (
     <>
-      <h2>Landlord Monthly Statement</h2>
-      <section className="panel">
-        <table>
+      <div className="page-header">
+        <h2>Landlord Monthly Statement</h2>
+      </div>
+      <section className="panel" style={{ maxWidth: 600 }}>
+        <table style={{ boxShadow: "none" }}>
           <tbody>
-            <tr><td>Rent Collected</td><td>USD {money(metrics.rentPaid)}</td></tr>
-            <tr><td>Levies Collected</td><td>USD {money(metrics.levyPaid)}</td></tr>
-            <tr><td>Less Commission</td><td>USD {money(metrics.commission)}</td></tr>
-            <tr><td>Less Expenses</td><td>USD {money(metrics.expenses)}</td></tr>
-            <tr><td><strong>Net Position</strong></td><td><strong>USD {money(metrics.netPosition)}</strong></td></tr>
-            <tr><td>Deposits Held Separately</td><td>USD {money(metrics.deposits)}</td></tr>
-            <tr><td>Arrears Carried Forward</td><td>USD {money(metrics.arrears)}</td></tr>
+            {[
+              ["Rent Collected", metrics.rentPaid],
+              ["Levies Collected", metrics.levyPaid],
+              ["Less Commission", -metrics.commission],
+              ["Less Expenses", -metrics.expenses],
+            ].map(([label, amount]) => (
+              <tr key={label as string}>
+                <td style={{ padding: "10px 16px", fontWeight: 500 }}>{label}</td>
+                <td style={{ padding: "10px 16px", textAlign: "right" }}>
+                  <strong>USD {money(Math.abs(amount as number))}</strong>
+                  {(amount as number) < 0 && <span style={{ color: "var(--red)", fontSize: 11, marginLeft: 4 }}>(deduction)</span>}
+                </td>
+              </tr>
+            ))}
+            <tr style={{ borderTop: "2px solid var(--blue)" }}>
+              <td style={{ padding: "12px 16px", fontWeight: 700, color: "var(--blue)" }}>Net Position</td>
+              <td style={{ padding: "12px 16px", textAlign: "right", fontWeight: 700, color: "var(--blue)", fontSize: 18 }}>
+                USD {money(metrics.netPosition)}
+              </td>
+            </tr>
+            {[
+              ["Deposits Held Separately", metrics.deposits],
+              ["Arrears Carried Forward", metrics.arrears],
+            ].map(([label, amount]) => (
+              <tr key={label as string}>
+                <td style={{ padding: "10px 16px", color: "var(--muted)" }}>{label}</td>
+                <td style={{ padding: "10px 16px", textAlign: "right", color: "var(--muted)" }}>USD {money(amount as number)}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </section>

@@ -40,26 +40,40 @@ export default function ChangePasswordPage() {
     }}>
       <form onSubmit={handleSubmit} style={{
         background: "white", padding: 48, borderRadius: 16, width: 420,
-        boxShadow: "0 8px 24px rgba(14,42,71,.08)",
+        boxShadow: "var(--shadow-lg)",
       }}>
-        <h1 style={{ fontSize: 22, color: "var(--blue)", margin: "0 0 6px", textAlign: "center" }}>Change Password</h1>
-        <p style={{ textAlign: "center", color: "var(--muted)", fontSize: 13, marginBottom: 24 }}>
-          You must change your password before continuing.
-        </p>
+        <div style={{ textAlign: "center", marginBottom: 28 }}>
+          <div style={{
+            width: 52, height: 52, borderRadius: 12, background: "var(--blue)",
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            color: "white", fontSize: 22, fontWeight: 800, marginBottom: 14,
+          }}>H</div>
+          <h1 style={{ fontSize: 22, color: "var(--blue)", margin: 0, fontWeight: 700 }}>Change Password</h1>
+          <p style={{ color: "var(--muted)", fontSize: 13, marginTop: 4 }}>
+            You must set a new password before continuing.
+          </p>
+        </div>
         {error && (
-          <div style={{ background: "#fef2f2", color: "#991b1b", padding: "10px 14px", borderRadius: 8, fontSize: 13, marginBottom: 16 }}>{error}</div>
+          <div style={{
+            background: "#fef2f2", color: "#991b1b", padding: "10px 14px",
+            borderRadius: 8, fontSize: 13, marginBottom: 16, border: "1px solid #fecaca",
+          }}>{error}</div>
         )}
-        <input type="password" placeholder="Current password" value={currentPassword} onChange={(e) => setCurrent(e.target.value)} required
+        <input type="password" placeholder="Current password" value={currentPassword}
+          onChange={(e) => setCurrent(e.target.value)} required autoFocus
           style={{ width: "100%", padding: "12px 14px", marginBottom: 12, borderRadius: 8, border: "1px solid #d1d5db", fontSize: 14 }} />
-        <input type="password" placeholder="New password (min 6 chars)" value={newPassword} onChange={(e) => setNew(e.target.value)} required
+        <input type="password" placeholder="New password (min 6 characters)" value={newPassword}
+          onChange={(e) => setNew(e.target.value)} required
           style={{ width: "100%", padding: "12px 14px", marginBottom: 12, borderRadius: 8, border: "1px solid #d1d5db", fontSize: 14 }} />
-        <input type="password" placeholder="Confirm new password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required
-          style={{ width: "100%", padding: "12px 14px", marginBottom: 20, borderRadius: 8, border: "1px solid #d1d5db", fontSize: 14 }} />
+        <input type="password" placeholder="Confirm new password" value={confirm}
+          onChange={(e) => setConfirm(e.target.value)} required
+          style={{ width: "100%", padding: "12px 14px", marginBottom: 24, borderRadius: 8, border: "1px solid #d1d5db", fontSize: 14 }} />
         <button type="submit" disabled={loading} style={{
-          width: "100%", padding: 12, background: "var(--blue)", color: "white",
+          width: "100%", padding: "12px 14px", background: "var(--blue)", color: "white",
           border: 0, borderRadius: 8, fontSize: 15, fontWeight: 600, cursor: "pointer",
+          transition: "all 0.15s ease",
         }}>
-          {loading ? "Updating..." : "Change Password"}
+          {loading ? "Updating…" : "Change Password"}
         </button>
       </form>
     </div>

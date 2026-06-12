@@ -6,10 +6,12 @@ export default async function Tenants() {
   const units = await getUnits();
   return (
     <>
-      <h2>Tenant Database</h2>
-      <details className="panel" style={{ marginBottom: 16 }}>
-        <summary style={{ cursor: "pointer", fontWeight: 600, color: "var(--blue)" }}>+ Add Tenant</summary>
-        <form method="post" action="/api/tenants" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12 }}>
+      <div className="page-header">
+        <h2>Tenant Database</h2>
+      </div>
+      <details className="panel">
+        <summary>+ Add Tenant</summary>
+        <form method="post" action="/api/tenants" className="form-grid">
           <input name="tenantName" placeholder="Tenant name" required />
           <input name="tradingName" placeholder="Trading name" />
           <select name="unitId" required>
@@ -26,28 +28,30 @@ export default async function Tenants() {
           <input name="rentDue" type="number" step="0.01" placeholder="Monthly rent due" />
           <input name="levyDue" type="number" step="0.01" placeholder="Monthly levy due" />
           <input name="notes" placeholder="Notes" />
-          <button type="submit" style={{ gridColumn: "1 / -1" }}>Add Tenant</button>
+          <button type="submit" className="full">Add Tenant</button>
         </form>
       </details>
-      <table>
-        <thead>
-          <tr><th>Tenant</th><th>Trading Name</th><th>Unit</th><th>Business Type</th><th>Commission</th><th>Rate</th><th>Statement</th><th></th></tr>
-        </thead>
-        <tbody>
-          {tenants.map((t) => (
-            <tr key={t.id}>
-              <td>{t.tenantName}</td>
-              <td>{t.tradingName}</td>
-              <td>{unitMap[t.unitId] ?? ""}</td>
-              <td>{t.businessType}</td>
-              <td>{t.commissionApplicable ? "Yes" : "No"}</td>
-              <td>{Math.round(t.commissionRate * 100)}%</td>
-              <td><a href={`/api/reports/statement/${t.id}`} style={{ fontSize: 12 }}>PDF</a></td>
-              <td><DeleteButton action={`/api/tenants/${t.id}/delete`} label="Delete" /></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Tenant</th><th>Trading Name</th><th>Unit</th><th>Business Type</th><th>Commission</th><th>Rate</th><th>Statement</th><th></th></tr>
+          </thead>
+          <tbody>
+            {tenants.map((t) => (
+              <tr key={t.id}>
+                <td><strong>{t.tenantName}</strong></td>
+                <td>{t.tradingName}</td>
+                <td>{unitMap[t.unitId] ?? ""}</td>
+                <td>{t.businessType}</td>
+                <td>{t.commissionApplicable ? <span className="badge badge-success">Yes</span> : <span className="badge">No</span>}</td>
+                <td>{Math.round(t.commissionRate * 100)}%</td>
+                <td><a href={`/api/reports/statement/${t.id}`} className="btn btn-ghost" style={{ fontSize: 12, padding: "4px 10px" }}>PDF</a></td>
+                <td><DeleteButton action={`/api/tenants/${t.id}/delete`} label="Delete" /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 }
