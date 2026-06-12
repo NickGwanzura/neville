@@ -154,6 +154,45 @@ async function main() {
   });
 
   console.log("Seeded successfully.");
+
+  const adminEmail = "neville@hiltonpropertieszw.com";
+  const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
+  if (!existingAdmin) {
+    const bcrypt = await import("bcryptjs");
+    const passwordHash = await bcrypt.hash("changeme123", 12);
+    await prisma.user.create({
+      data: {
+        email: adminEmail,
+        passwordHash,
+        name: "Neville Mupunga",
+        role: "Admin",
+        mustChangePassword: true,
+      },
+    });
+    console.log(`Admin user created: ${adminEmail} / changeme123`);
+  } else {
+    console.log("Admin user already exists.");
+  }
+
+  const existingSettings = await prisma.companySettings.findFirst();
+  if (!existingSettings) {
+    await prisma.companySettings.create({
+      data: {
+        companyName: "Hilton Properties",
+        tagline: "Premier Property Management Platform",
+        address: "Glenara, Highlands, Harare",
+        phone: "+263 77 123 4567",
+        email: "notifications@hiltonpropertieszw.com",
+        website: "https://www.hiltonpropertieszw.com",
+        currency: "USD",
+        footer: "Hilton Properties — Excellence in Property Management",
+        primaryColor: "#0e2a47",
+        secondaryColor: "#173d63",
+      },
+    });
+    console.log("Company settings created.");
+  }
+
   await prisma.$disconnect();
 }
 

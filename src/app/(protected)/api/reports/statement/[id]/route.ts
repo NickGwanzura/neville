@@ -8,7 +8,7 @@ export async function GET(
   const { id } = await params;
   const tenant = await prisma.tenant.findUniqueOrThrow({
     where: { id: parseInt(id) },
-    include: { unit: true, property: true },
+    include: { unit: true },
   });
 
   const entries = await prisma.rentRoll.findMany({
@@ -17,7 +17,6 @@ export async function GET(
   });
 
   const pdf = await generateStatementPdf(
-    tenant.property.name,
     tenant.tenantName,
     tenant.unit.unitName,
     entries.map((e) => ({

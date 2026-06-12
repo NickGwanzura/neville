@@ -14,7 +14,6 @@ export async function GET(
   const pdf = await generateInvoicePdf({
     tenantName: r.tenant.tenantName,
     unitName: r.unit.unitName,
-    propertyName: r.property.name,
     month: r.month,
     rentDue: r.rentDue,
     levyDue: r.levyDue,

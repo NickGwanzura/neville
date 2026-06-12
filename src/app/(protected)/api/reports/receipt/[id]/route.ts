@@ -15,7 +15,6 @@ export async function GET(
     receiptNumber: r.receiptNumber,
     tenantName: r.tenant.tenantName,
     unitName: r.unit.unitName,
-    propertyName: r.property.name,
     month: r.month,
     rentDue: r.rentDue,
     rentPaid: r.rentPaid,

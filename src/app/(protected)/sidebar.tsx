@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const links = [
   { href: "/", label: "Dashboard" },
@@ -27,6 +27,13 @@ const exports = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/login");
+  }
+
   return (
     <aside className="sidebar">
       <div className="brand">
@@ -52,6 +59,13 @@ export default function Sidebar() {
             {link.label}
           </a>
         ))}
+        <div style={{ color: "var(--silver)", fontSize: 11, padding: "16px 12px 4px", fontWeight: 600, letterSpacing: 1 }}>SYSTEM</div>
+        <Link href="/settings" className={pathname === "/settings" ? "active" : ""} style={{ fontSize: 13 }}>
+          Company Settings
+        </Link>
+        <a onClick={handleLogout} style={{ fontSize: 13, cursor: "pointer" }}>
+          Sign Out
+        </a>
       </nav>
     </aside>
   );

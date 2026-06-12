@@ -100,6 +100,31 @@ model Deposit {
   tenant     Tenant   @relation(fields: [tenantId], references: [id])
 }
 
+model CompanySettings {
+  id            Int    @id @default(autoincrement())
+  companyName   String @default("Hilton Properties")
+  tagline       String @default("Premier Property Management Platform")
+  address       String @default("")
+  phone         String @default("")
+  email         String @default("")
+  website       String @default("")
+  logoUrl       String @default("")
+  currency      String @default("USD")
+  footer        String @default("Thank you for your business")
+  primaryColor  String @default("#0e2a47")
+  secondaryColor String @default("#173d63")
+}
+
+model User {
+  id               Int      @id @default(autoincrement())
+  email            String   @unique
+  passwordHash     String
+  name             String   @default("")
+  role             String   @default("Admin")
+  mustChangePassword Boolean @default(true)
+  createdAt        DateTime @default(now())
+}
+
 model MaintenanceLog {
   id            Int       @id @default(autoincrement())
   propertyId    Int

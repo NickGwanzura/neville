@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Sidebar from "./sidebar";
 
 export const metadata: Metadata = {
   title: "Hilton Properties CRM",
@@ -14,12 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <div className="layout">
-          <Sidebar />
-          <main className="content">{children}</main>
-        </div>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
