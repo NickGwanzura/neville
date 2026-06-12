@@ -124,6 +124,37 @@ nav a.active {
   font-weight: 600;
 }
 
+.export-subhead {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 12px 2px;
+}
+
+.export-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  padding: 6px 12px 6px 30px;
+  border-radius: 6px;
+  font-size: 13px;
+  transition: all 0.15s ease;
+}
+
+.export-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.export-link .nav-icon {
+  font-size: 12px;
+  opacity: 0.4;
+}
+
 .nav-icon {
   width: 20px;
   text-align: center;

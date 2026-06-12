@@ -15,14 +15,17 @@ const links = [
   { href: "/landlord-statement", label: "Statement", icon: "📄" },
 ];
 
-const exports = [
-  { href: "/export/rent-roll.csv", label: "CSV: Rent Roll" },
-  { href: "/api/export/units", label: "CSV: Units" },
-  { href: "/api/export/tenants", label: "CSV: Tenants" },
-  { href: "/api/export/expenses", label: "CSV: Expenses" },
-  { href: "/api/export/arrears", label: "CSV: Arrears" },
-  { href: "/api/export/reports/landlord-statement", label: "PDF: Statement" },
-  { href: "/api/export/reports/arrears", label: "PDF: Arrears" },
+const csvExports = [
+  { href: "/export/rent-roll.csv", label: "Rent Roll" },
+  { href: "/api/export/units", label: "Units" },
+  { href: "/api/export/tenants", label: "Tenants" },
+  { href: "/api/export/expenses", label: "Expenses" },
+  { href: "/api/export/arrears", label: "Arrears" },
+];
+
+const pdfExports = [
+  { href: "/api/export/reports/landlord-statement", label: "Monthly Statement" },
+  { href: "/api/export/reports/arrears", label: "Arrears Report" },
 ];
 
 export default function Sidebar() {
@@ -56,12 +59,23 @@ export default function Sidebar() {
           </Link>
         ))}
         <div className="nav-section">Exports</div>
-        {exports.map((link) => (
-          <a key={link.href} href={link.href} className="nav-item">
-            <span className="nav-icon">↓</span>
+
+        <div className="export-subhead">Download CSV</div>
+        {csvExports.map((link) => (
+          <a key={link.href} href={link.href} className="export-link">
+            <span className="nav-icon">╰</span>
             {link.label}
           </a>
         ))}
+
+        <div className="export-subhead" style={{ paddingTop: 12 }}>Download PDF</div>
+        {pdfExports.map((link) => (
+          <a key={link.href} href={link.href} className="export-link">
+            <span className="nav-icon">╰</span>
+            {link.label}
+          </a>
+        ))}
+
         <div className="nav-section">System</div>
         <Link href="/settings" className={pathname === "/settings" ? "active nav-item" : "nav-item"}>
           <span className="nav-icon">⚙</span>
