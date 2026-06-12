@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { generateStatementPdf } from "@/lib/pdf-receipt";
 
@@ -31,7 +32,7 @@ export async function GET(
     })),
   );
 
-  return new Response(new Uint8Array(pdf), {
+  return new NextResponse(new Uint8Array(pdf), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="statement-${id}.pdf"`,

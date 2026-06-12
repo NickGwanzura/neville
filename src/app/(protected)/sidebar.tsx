@@ -13,6 +13,7 @@ const links = [
   { href: "/expenses", label: "Expenses", icon: "📊" },
   { href: "/maintenance", label: "Maintenance", icon: "🔧" },
   { href: "/landlord-statement", label: "Statement", icon: "📄" },
+  { href: "/lease-reviews", label: "Lease Reviews", icon: "✓" },
 ];
 
 const csvExports = [

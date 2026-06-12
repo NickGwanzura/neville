@@ -81,8 +81,10 @@ export async function generatePdf(
   });
 }
 
+import { NextResponse } from "next/server";
+
 export function pdfResponse(buffer: Buffer, filename: string): Response {
-  return new Response(new Uint8Array(buffer), {
+  return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="${filename}"`,

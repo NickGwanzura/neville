@@ -153,10 +153,11 @@ async function main() {
   }
 
   const adminEmail = "neville@hiltonpropertieszw.com";
+  const tempPassword = "hilton2026";
+  const bcrypt = await import("bcryptjs");
+  const passwordHash = await bcrypt.hash(tempPassword, 12);
   const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
   if (!existingAdmin) {
-    const bcrypt = await import("bcryptjs");
-    const passwordHash = await bcrypt.hash("changeme123", 12);
     await prisma.user.create({
       data: {
         email: adminEmail,
@@ -166,9 +167,13 @@ async function main() {
         mustChangePassword: true,
       },
     });
-    console.log(`Admin user created: ${adminEmail} / changeme123`);
+    console.log(`Admin user created: ${adminEmail} / ${tempPassword}`);
   } else {
-    console.log("Admin user already exists.");
+    await prisma.user.update({
+      where: { email: adminEmail },
+      data: { passwordHash, mustChangePassword: true },
+    });
+    console.log(`Admin user updated: ${adminEmail} / ${tempPassword}`);
   }
 
   const admin2Email = "nicholas.gwanzura@outlook.com";

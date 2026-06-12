@@ -24,6 +24,27 @@ export type Metrics = {
   arrears: number;
   netPosition: number;
   occupancyRate: number;
+  collectionRate: number;
+  openMaintenance: number;
+  criticalMaintenance: number;
+  totalTenants: number;
+  tenantsPaidInFull: number;
+  totalMaintenanceCost: number;
+};
+
+export type LeaseReview = {
+  tenantId: number;
+  tenantName: string;
+  unitName: string;
+  totalMonths: number;
+  monthsPaid: number;
+  monthsPaidInFull: number;
+  onTimeRate: number;
+  totalRentDue: number;
+  totalRentPaid: number;
+  outstandingBalance: number;
+  maintenanceCount: number;
+  lastPaymentMonth: string;
 };
 
 export async function getCrmData(propertyId = 1, month = "2026-06") {
@@ -42,6 +63,10 @@ export async function getCrmData(propertyId = 1, month = "2026-06") {
     where: { propertyId, month },
     orderBy: { id: "asc" },
   });
+  const allRentRoll = await prisma.rentRoll.findMany({
+    where: { propertyId },
+    orderBy: { month: "asc" },
+  });
   const expenses = await prisma.expense.findMany({
     where: { propertyId, month },
     orderBy: { id: "asc" },
@@ -54,6 +79,10 @@ export async function getCrmData(propertyId = 1, month = "2026-06") {
     where: { propertyId },
     orderBy: { id: "asc" },
   });
+
+  const tenantsPaidInFull = rentRoll.filter(
+    (r) => r.rentPaid >= r.rentDue && r.levyPaid >= r.levyDue,
+  ).length;
 
   const metrics: Metrics = {
     totalUnits: units.length,
@@ -75,6 +104,15 @@ export async function getCrmData(propertyId = 1, month = "2026-06") {
     arrears: 0,
     netPosition: 0,
     occupancyRate: 0,
+    collectionRate: 0,
+    openMaintenance: maintenance.filter(
+      (m) => m.status === "Open" || m.status === "In Progress",
+    ).length,
+    criticalMaintenance: maintenance.filter((m) => m.priority === "Critical")
+      .length,
+    totalTenants: tenants.length,
+    tenantsPaidInFull,
+    totalMaintenanceCost: maintenance.reduce((s, m) => s + m.estimatedCost, 0),
   };
   metrics.arrears =
     metrics.rentDue - metrics.rentPaid + (metrics.levyDue - metrics.levyPaid);
@@ -87,17 +125,63 @@ export async function getCrmData(propertyId = 1, month = "2026-06") {
     metrics.totalUnits > 0
       ? Math.round((metrics.occupied / metrics.totalUnits) * 100 * 10) / 10
       : 0;
+  metrics.collectionRate =
+    metrics.rentDue > 0
+      ? Math.round((metrics.rentPaid / metrics.rentDue) * 100 * 10) / 10
+      : 0;
 
   const unitMap = Object.fromEntries(units.map((u) => [u.id, u.unitName]));
   const tenantMap = Object.fromEntries(
     tenants.map((t) => [t.id, t.tenantName]),
   );
 
+  const leaseReviews: LeaseReview[] = tenants.map((t) => {
+    const tenantEntries = allRentRoll.filter((r) => r.tenantId === t.id);
+    const monthsPaid = tenantEntries.filter((r) => r.rentPaid > 0).length;
+    const monthsPaidInFull = tenantEntries.filter(
+      (r) => r.rentPaid >= r.rentDue && r.levyPaid >= r.levyDue,
+    ).length;
+    const totalRentDue = tenantEntries.reduce((s, r) => s + r.rentDue, 0);
+    const totalRentPaid = tenantEntries.reduce((s, r) => s + r.rentPaid, 0);
+    const outstandingBalance =
+      totalRentDue -
+      totalRentPaid +
+      (tenantEntries.reduce((s, r) => s + r.levyDue, 0) -
+        tenantEntries.reduce((s, r) => s + r.levyPaid, 0));
+    const lastPaid = [...tenantEntries]
+      .reverse()
+      .find((r) => r.rentPaid > 0);
+
+    const tenantUnits = units.filter((u) => u.id === t.unitId);
+    const maintenanceCount = maintenance.filter((m) =>
+      tenantUnits.some((u) => u.id === m.unitId),
+    ).length;
+
+    return {
+      tenantId: t.id,
+      tenantName: t.tenantName,
+      unitName: unitMap[t.unitId] ?? "",
+      totalMonths: tenantEntries.length,
+      monthsPaid,
+      monthsPaidInFull,
+      onTimeRate:
+        tenantEntries.length > 0
+          ? Math.round((monthsPaidInFull / tenantEntries.length) * 100)
+          : 0,
+      totalRentDue,
+      totalRentPaid,
+      outstandingBalance,
+      maintenanceCount,
+      lastPaymentMonth: lastPaid?.month ?? "—",
+    };
+  });
+
   return {
     property,
     units,
     tenants,
     rentRoll,
+    allRentRoll,
     expenses,
     deposits,
     maintenance,
@@ -105,5 +189,6 @@ export async function getCrmData(propertyId = 1, month = "2026-06") {
     metrics,
     unitMap,
     tenantMap,
+    leaseReviews,
   };
 }

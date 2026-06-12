@@ -57,14 +57,16 @@ export default async function RentRollPage() {
                   <a href={`/api/reports/receipt/${r.id}`} className="btn btn-ghost" style={{ fontSize: 11, padding: "3px 8px" }}>Receipt</a>
                 </td>
                 <td>
-                  <form method="post" action={`/rent-roll/${r.id}/update`} className="inline-form">
-                    <input name="rentPaid" defaultValue={r.rentPaid} type="number" step="0.01" placeholder="Paid" />
-                    <input name="levyPaid" defaultValue={r.levyPaid} type="number" step="0.01" placeholder="Levy" />
-                    <input name="receiptNumber" defaultValue={r.receiptNumber} placeholder="Receipt" style={{ width: 100 }} />
-                    <input name="notes" defaultValue={r.notes} placeholder="Notes" style={{ width: 120 }} />
-                    <button style={{ padding: "6px 10px", fontSize: 12 }}>Save</button>
+                  <div className="action-cell">
+                    <form method="post" action={`/rent-roll/${r.id}/update`} className="inline-form">
+                      <input name="rentPaid" defaultValue={r.rentPaid} type="number" step="0.01" placeholder="Paid" />
+                      <input name="levyPaid" defaultValue={r.levyPaid} type="number" step="0.01" placeholder="Levy" />
+                      <input name="receiptNumber" defaultValue={r.receiptNumber} placeholder="Receipt" style={{ width: 100 }} />
+                      <input name="notes" defaultValue={r.notes} placeholder="Notes" style={{ width: 120 }} />
+                      <button style={{ padding: "6px 10px", fontSize: 12 }}>Save</button>
+                    </form>
                     <DeleteButton action={`/api/rent-roll/${r.id}/delete`} />
-                  </form>
+                  </div>
                 </td>
               </tr>
             ))}
